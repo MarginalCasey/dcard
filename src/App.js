@@ -35,6 +35,7 @@ function App() {
         </div>
         {result.map(item => (
           <a
+            style={{ height: (item.id % 3 + 1) * 30 }}
             key={item.id}
             href={item.html_url}
             target="_blank"
