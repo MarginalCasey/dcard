@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import useSearchRepositories from './hooks/useSearchRepositories'
+import useLoadMore from './hooks/useLoadMore'
 import './App.css'
 
 function App() {
@@ -11,7 +12,12 @@ function App() {
     setPage(1)
   }
 
-  const { isFetching, result } = useSearchRepositories(searchText, page)
+  const { isFetching, isSuccess, result, isIncomplete } = useSearchRepositories(
+    searchText,
+    page
+  )
+
+  const loadMoreRef = useLoadMore(isSuccess, isIncomplete, setPage)
 
   return (
     <div>
@@ -24,15 +30,20 @@ function App() {
         />
       </nav>
       <main>
-        {isFetching ? (
-          <div className="loading">載入中...</div>
-        ) : (
-          result.map(item => (
-            <a key={item.id} href={item.html_url} target="_blank" rel="noreferrer">
-              {item.full_name}
-            </a>
-          ))
-        )}
+        <div className="loading">
+          {result.length === 0 && isFetching && '載入中...'}
+        </div>
+        {result.map(item => (
+          <a
+            key={item.id}
+            href={item.html_url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {item.full_name}
+          </a>
+        ))}
+        {isSuccess && <div ref={loadMoreRef} className="load-more" />}
       </main>
     </div>
   )

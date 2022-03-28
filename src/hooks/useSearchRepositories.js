@@ -7,6 +7,7 @@ function useSearchRepositories(searchText, page) {
   const abortControllerRef = useRef()
 
   const [isFetching, setIsFetching] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
   const [result, setResult] = useState([])
   const [isIncomplete, setIsIncomplete] = useState(false)
 
@@ -18,6 +19,7 @@ function useSearchRepositories(searchText, page) {
         }
 
         setIsFetching(true)
+        setIsSuccess(false)
         abortControllerRef.current = new AbortController()
 
         searchRepositoriesAPI(
@@ -26,9 +28,15 @@ function useSearchRepositories(searchText, page) {
         )
           .then(data => {
             setIsFetching(false)
+            setIsSuccess(true)
 
-            setResult(data.items)
-            setIsIncomplete(data.incomplete_results)
+            if (page === 1) {
+              setResult(data.items)
+            } else {
+              setResult(result => [...result, ...data.items])
+            }
+
+            setIsIncomplete(data.items.length === 30)
           })
           .catch(error => {
             setIsFetching(false)
@@ -43,7 +51,7 @@ function useSearchRepositories(searchText, page) {
     500
   )
 
-  return { isFetching, result, isIncomplete }
+  return { isFetching, isSuccess, result, isIncomplete }
 }
 
 export default useSearchRepositories
