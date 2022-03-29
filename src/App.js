@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import useSearchRepositories from './hooks/useSearchRepositories'
 import useLoadMore from './hooks/useLoadMore'
+import Link from './Link'
 import './App.css'
 
 function App() {
@@ -34,15 +35,13 @@ function App() {
           {result.length === 0 && isFetching && '載入中...'}
         </div>
         {result.map(item => (
-          <a
-            style={{ height: (item.id % 3 + 1) * 30 }}
+          <Link
             key={item.id}
-            href={item.html_url}
-            target="_blank"
-            rel="noreferrer"
+            url={item.html_url}
+            style={{ height: ((item.id % 3) + 1) * 30 }}
           >
             {item.full_name}
-          </a>
+          </Link>
         ))}
         {isSuccess && <div ref={loadMoreRef} className="load-more" />}
       </main>
