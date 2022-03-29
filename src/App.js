@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import useSearchRepositories from './hooks/useSearchRepositories'
 import useLoadMore from './hooks/useLoadMore'
 import Link from './Link'
@@ -20,6 +20,8 @@ function App() {
 
   const loadMoreRef = useLoadMore(isSuccess, isIncomplete, setPage)
 
+  const cachedHeight = useMemo(() => ({}), [])
+
   return (
     <div>
       <nav>
@@ -37,7 +39,9 @@ function App() {
         {result.map(item => (
           <Link
             key={item.id}
+            id={item.id}
             url={item.html_url}
+            cachedHeight={cachedHeight}
             style={{ height: ((item.id % 3) + 1) * 30 }}
           >
             {item.full_name}
