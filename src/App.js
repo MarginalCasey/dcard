@@ -1,10 +1,31 @@
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import useSearchRepositories from './hooks/useSearchRepositories'
 import useLoadMore from './hooks/useLoadMore'
 import Link from './Link'
 import './App.css'
 
+const NAV_HEIGHT = 48
+
 function App() {
+  const viewPortHeight = useRef(window.innerHeight)
+
+  useEffect(() => {
+    let timer
+
+    function countViewPortHeight() {
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        viewPortHeight.current = window.innerHeight
+      }, 500)
+    }
+
+    window.addEventListener('resize', countViewPortHeight)
+
+    return () => window.removeEventListener('resize', countViewPortHeight)
+  }, [])
+
+  const cachedHeight = useMemo(() => ({}), [])
+
   const [searchText, setSearchText] = useState('')
   const [page, setPage] = useState(1)
 
@@ -20,11 +41,9 @@ function App() {
 
   const loadMoreRef = useLoadMore(isSuccess, isIncomplete, setPage)
 
-  const cachedHeight = useMemo(() => ({}), [])
-
   return (
     <div>
-      <nav>
+      <nav style={{ height: NAV_HEIGHT }}>
         <input
           type="text"
           value={searchText}
