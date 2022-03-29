@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
+import usePrevious from './hooks/usePrevious'
 import useSearchRepositories from './hooks/useSearchRepositories'
 import useLoadMore from './hooks/useLoadMore'
 import Link from './Link'
@@ -41,6 +42,17 @@ function App() {
 
   const loadMoreRef = useLoadMore(isSuccess, isIncomplete, setPage)
 
+  const [visibleRange, setVisibleRange] = useState([0, 0])
+
+  const prevResult = usePrevious(result)
+
+  useEffect(() => {
+    setVisibleRange(prev => [
+      prev[0],
+      prev[1] + result.length - prevResult.length,
+    ])
+  }, [result])
+
   return (
     <div>
       <nav style={{ height: NAV_HEIGHT }}>
@@ -55,7 +67,7 @@ function App() {
         <div className="loading">
           {result.length === 0 && isFetching && '載入中...'}
         </div>
-        {result.map(item => (
+        {result.slice(visibleRange[0], visibleRange[1] + 1).map(item => (
           <Link
             key={item.id}
             id={item.id}
