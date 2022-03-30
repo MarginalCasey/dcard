@@ -1,30 +1,13 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
-import usePrevious from './hooks/usePrevious'
+import { useState, useMemo } from 'react'
 import useSearchRepositories from './hooks/useSearchRepositories'
 import useLoadMore from './hooks/useLoadMore'
+import useWindow from './hooks/useWindow'
 import Link from './Link'
 import './App.css'
 
 const NAV_HEIGHT = 48
 
 function App() {
-  const viewPortHeight = useRef(window.innerHeight)
-
-  useEffect(() => {
-    let timer
-
-    function countViewPortHeight() {
-      clearTimeout(timer)
-      timer = setTimeout(() => {
-        viewPortHeight.current = window.innerHeight
-      }, 500)
-    }
-
-    window.addEventListener('resize', countViewPortHeight)
-
-    return () => window.removeEventListener('resize', countViewPortHeight)
-  }, [])
-
   const cachedHeight = useMemo(() => ({}), [])
 
   const [searchText, setSearchText] = useState('')
@@ -42,16 +25,11 @@ function App() {
 
   const loadMoreRef = useLoadMore(isSuccess, isIncomplete, setPage)
 
-  const [visibleRange, setVisibleRange] = useState([0, 0])
-
-  const prevResult = usePrevious(result)
-
-  useEffect(() => {
-    setVisibleRange(prev => [
-      prev[0],
-      prev[1] + result.length - prevResult.length,
-    ])
-  }, [result])
+  const { paddingTop, firstItemRef, visibleData } = useWindow({
+    data: result,
+    cachedHeight,
+    rootMargin: `-${NAV_HEIGHT}px 0px 0px 0px`,
+  })
 
   return (
     <div>
@@ -63,12 +41,13 @@ function App() {
           placeholder="Search or jump to.."
         />
       </nav>
-      <main>
+      <main style={{ paddingTop }}>
         <div className="loading">
           {result.length === 0 && isFetching && '載入中...'}
         </div>
-        {result.slice(visibleRange[0], visibleRange[1] + 1).map(item => (
+        {visibleData.map((item, index) => (
           <Link
+            ref={(index === 0 && firstItemRef) || null}
             key={item.id}
             id={item.id}
             url={item.html_url}
