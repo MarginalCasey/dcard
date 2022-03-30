@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import axios from 'axios'
+import usePrevious from './usePrevious'
 import useDebounceEffect from './useDebounceEffect'
 import searchRepositoriesAPI from '../apis/searchRepositoriesAPI'
 
@@ -11,6 +12,8 @@ function useSearchRepositories(searchText, page) {
   const [result, setResult] = useState([])
   const [isIncomplete, setIsIncomplete] = useState(false)
 
+  const prevSearchText = usePrevious(searchText)
+
   useDebounceEffect(
     () => {
       if (searchText !== '') {
@@ -20,6 +23,12 @@ function useSearchRepositories(searchText, page) {
 
         setIsFetching(true)
         setIsSuccess(false)
+
+        if (searchText !== prevSearchText) {
+          setResult([])
+          setIsIncomplete(false)
+        }
+
         abortControllerRef.current = new AbortController()
 
         searchRepositoriesAPI(
