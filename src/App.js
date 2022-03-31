@@ -14,7 +14,7 @@ function App() {
     setPage(1)
   }
 
-  const { isFetching, isSuccess, result, isIncomplete } = useSearchRepositories(
+  const { isFetching, result, isIncomplete } = useSearchRepositories(
     searchText,
     page
   )
@@ -48,7 +48,9 @@ function App() {
             {item.full_name}
           </Link>
         ))}
-        {isSuccess && isIncomplete && <LoadMore setPage={setPage} />}
+        {!isFetching && isIncomplete && result.length > 0 && (
+          <LoadMore setPage={setPage} />
+        )}
       </main>
     </div>
   )
