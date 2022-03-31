@@ -10,7 +10,7 @@ function useSearchRepositories(searchText, page) {
   const [isFetching, setIsFetching] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [result, setResult] = useState([])
-  const [isIncomplete, setIsIncomplete] = useState(false)
+  const [isIncomplete, setIsIncomplete] = useState(true)
 
   const prevSearchText = usePrevious(searchText)
 
@@ -26,7 +26,7 @@ function useSearchRepositories(searchText, page) {
 
         if (searchText !== prevSearchText) {
           setResult([])
-          setIsIncomplete(false)
+          setIsIncomplete(true)
         }
 
         abortControllerRef.current = new AbortController()
