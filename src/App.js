@@ -5,8 +5,6 @@ import useWindow from './hooks/useWindow'
 import Link from './Link'
 import './App.css'
 
-const NAV_HEIGHT = 48
-
 function App() {
   const [searchText, setSearchText] = useState('')
   const [page, setPage] = useState(1)
@@ -29,7 +27,7 @@ function App() {
 
   return (
     <div>
-      <nav style={{ height: NAV_HEIGHT }}>
+      <nav>
         <input
           type="text"
           value={searchText}
