@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useEffect } from 'react'
+import React, { forwardRef, useRef, useEffect, memo } from 'react'
 import PropTypes from 'prop-types'
 
 const Link = forwardRef(
@@ -27,4 +27,4 @@ Link.propTypes = {
   children: PropTypes.node,
 }
 
-export default Link
+export default memo(Link)
