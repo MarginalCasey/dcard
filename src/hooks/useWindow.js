@@ -24,6 +24,8 @@ function useWindow({ data }) {
 
   useEffect(() => {
     if (data.length === 0) {
+      setPaddingTop(0)
+      setPaddingBottom(0)
       setVisibleRange([0, -1])
     } else {
       setPaddingBottom(0)
