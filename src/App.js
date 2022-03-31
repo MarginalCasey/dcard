@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import useSearchRepositories from './hooks/useSearchRepositories'
 import useLoadMore from './hooks/useLoadMore'
 import useWindow from './hooks/useWindow'
@@ -8,8 +8,6 @@ import './App.css'
 const NAV_HEIGHT = 48
 
 function App() {
-  const cachedHeight = useMemo(() => ({}), [])
-
   const [searchText, setSearchText] = useState('')
   const [page, setPage] = useState(1)
 
@@ -23,13 +21,11 @@ function App() {
     page
   )
 
-  const loadMoreRef = useLoadMore(isSuccess, isIncomplete, setPage)
-
-  const { paddingTop, firstItemRef, visibleData } = useWindow({
+  const { cachedHeight, paddingTop, paddingBottom, visibleData } = useWindow({
     data: result,
-    cachedHeight,
-    rootMargin: `-${NAV_HEIGHT}px 0px 0px 0px`,
   })
+
+  const loadMoreRef = useLoadMore(isSuccess, isIncomplete, setPage)
 
   return (
     <div>
@@ -41,13 +37,12 @@ function App() {
           placeholder="Search or jump to.."
         />
       </nav>
-      <main style={{ paddingTop }}>
+      <main style={{ paddingTop, paddingBottom }}>
         <div className="loading">
           {result.length === 0 && isFetching && '載入中...'}
         </div>
         {visibleData.map((item, index) => (
           <Link
-            ref={(index === 0 && firstItemRef) || null}
             key={item.id}
             id={item.id}
             url={item.html_url}

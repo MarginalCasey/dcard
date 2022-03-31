@@ -8,7 +8,7 @@ const Link = forwardRef(
 
     useEffect(() => {
       if (cachedHeight[id] === undefined) {
-        cachedHeight[id] = linkRef.current.clientHeight
+        cachedHeight[id] = linkRef.current.offsetHeight
       }
     }, [])
 
