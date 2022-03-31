@@ -42,7 +42,19 @@ function useSearchRepositories(searchText, page) {
             if (page === 1) {
               setResult(data.items)
             } else {
-              setResult(result => [...result, ...data.items])
+              setResult(result => {
+                // github API 有時會回傳重複的資料
+                const idSet = new Set(result.map(item => item.id))
+
+                return data.items.reduce((arr, item) => {
+                  if (idSet.has(item.id)) {
+                    return arr
+                  } else {
+                    idSet.add(item.id)
+                    return [...arr, item]
+                  }
+                }, result)
+              })
             }
 
             setIsIncomplete(data.items.length === 30)
