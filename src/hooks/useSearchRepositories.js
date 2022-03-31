@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import axios from 'axios'
-import usePrevious from './usePrevious'
-import useDebounceEffect from './useDebounceEffect'
+import usePrevious from './state/usePrevious'
+import useDebounceEffect from './lifecycles/useDebounceEffect'
 import searchRepositoriesAPI from '../apis/searchRepositoriesAPI'
 
 function useSearchRepositories(searchText, page) {
