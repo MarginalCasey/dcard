@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import useSearchRepositories from './hooks/useSearchRepositories'
-import useLoadMore from './hooks/useLoadMore'
 import useWindow from './hooks/useWindow'
 import Link from './Link'
+import LoadMore from './LoadMore'
 import './App.css'
 
 function App() {
@@ -22,8 +22,6 @@ function App() {
   const { cachedHeight, paddingTop, paddingBottom, visibleData } = useWindow({
     data: result,
   })
-
-  const loadMoreRef = useLoadMore(isSuccess, isIncomplete, setPage)
 
   return (
     <div>
@@ -50,7 +48,7 @@ function App() {
             {item.full_name}
           </Link>
         ))}
-        {isSuccess && <div ref={loadMoreRef} className="load-more" />}
+        {isSuccess && isIncomplete && <LoadMore setPage={setPage} />}
       </main>
     </div>
   )
