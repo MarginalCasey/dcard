@@ -4,17 +4,19 @@ function useLoadMore(isSuccess, isIncomplete, setPage) {
   const anchorRef = useRef()
 
   useEffect(() => {
-    function callback(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting && isIncomplete) {
-          setPage(page => page + 1)
-        }
-      })
+    function loadMore([anchor]) {
+      if (anchor.isIntersecting && isIncomplete) {
+        setPage(page => page + 1)
+      }
     }
 
     if (isSuccess) {
-      const observer = new IntersectionObserver(callback)
+      const observer = new IntersectionObserver(loadMore)
       observer.observe(anchorRef.current)
+
+      return () => {
+        observer.disconnect()
+      }
     }
   }, [isSuccess, isIncomplete, setPage])
 
